@@ -4,7 +4,7 @@ import java.util.logging.Logger;
 import java.util.Scanner;
 
 
-class PreContacts{
+class PreContacts implements Comparator {
     Logger log=Logger.getLogger(Contacts.class.getName());
     Scanner input=new Scanner(System.in);
 
@@ -44,12 +44,14 @@ class PreContacts{
     void savingOneContact(){
         ContactDetails newContact=new ContactDetails();
         log.info("Enter the Name : ");
+        input.nextLine();
         String name=input.nextLine();
         newContact.setName(name);
         log.info("Enter the Mobile Number :");
         int phoneNo=input.nextInt();
         newContact.setPhoneNo(phoneNo);
         log.info("Enter the Email : ");
+        input.nextLine();
         String email=input.nextLine();
         newContact.setEmail(email);
         log.info("Enter the Notes : ");
@@ -68,6 +70,8 @@ class PreContacts{
             log.info("No contacts available");
         }
         else{
+            PreContacts comparator=new PreContacts();
+            Collections.sort(contactList, comparator);
             for(ContactDetails contacts:contactList){
                 log.info("\nName : "+contacts.getName()+"\nPhone No : "+contacts.getPhoneNo()+"\nEmail : "+contacts.getEmail()+"\nNotes : "+contacts.getNotes());
             }
@@ -99,6 +103,7 @@ class PreContacts{
             if(contacts.getPhoneNo()==phoneNo){
                 log.info("\n======================\n        Calling       \nName : "+contacts.getName()+"\nPhone No : "+contacts.getPhoneNo()+"\n======================");
                 flag=false;
+                break;
             }
         }
         if(flag){
@@ -123,4 +128,23 @@ class PreContacts{
         }
     }
 
+    @Override
+    public int compare(Object contact1,Object contact2) {
+        ContactDetails firstContact=(ContactDetails) contact1;
+        ContactDetails secondContact=(ContactDetails) contact2;
+
+        int result =firstContact.getName().compareTo(secondContact.getName());
+        if(result>0)
+            return +1;
+        else if(result < 0)
+            return -1;
+        else
+            if(firstContact.getPhoneNo() > secondContact.getPhoneNo())
+                return 1;
+            else if(firstContact.getPhoneNo() < secondContact.getPhoneNo())
+                return -1;
+            else
+                return 0;
+
+    }
 }
