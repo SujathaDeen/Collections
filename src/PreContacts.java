@@ -4,7 +4,7 @@ import java.util.logging.Logger;
 import java.util.Scanner;
 
 
-class PreContacts implements Comparator<ContactDetails> {
+class PreContacts {
     Logger log=Logger.getLogger(Contacts.class.getName());
     Scanner input=new Scanner(System.in);
 
@@ -121,10 +121,5 @@ class PreContacts implements Comparator<ContactDetails> {
         if(flag){
             log.info("No such Records");
         }
-    }
-
-    @Override
-    public int compare(ContactDetails o1, ContactDetails o2) {
-        return 0;
     }
 }
