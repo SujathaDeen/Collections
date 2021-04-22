@@ -14,7 +14,7 @@ public class Contacts {
             log.warning("Please Enter Proper Value");
         }
         catch(Exception e){
-            log.warning("Something went wrong"+ e.getMessage());
+            log.warning("Something went wrong \" "+e.getMessage()+" \" " );
         }
         finally {
             log.info("Finally Program terminated");

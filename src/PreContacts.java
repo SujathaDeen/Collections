@@ -1,7 +1,9 @@
 import collections.*;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 
 class PreContacts implements Comparator {
@@ -48,7 +50,7 @@ class PreContacts implements Comparator {
         String name=input.nextLine();
         newContact.setName(name);
         log.info("Enter the Mobile Number :");
-        int phoneNo=input.nextInt();
+        Long phoneNo=input.nextLong();
         newContact.setPhoneNo(phoneNo);
         log.info("Enter the Email : ");
         input.nextLine();
@@ -60,10 +62,11 @@ class PreContacts implements Comparator {
         savingContacts(newContact);
     }
 
-    List<ContactDetails> contactList=new ArrayList();
+    List<ContactDetails> contactList=new LinkedList();
     void savingContacts(ContactDetails newContact){
         contactList.add(newContact);
     }
+    Iterator listIterator = contactList.iterator();
 
     void contactList(){
         if(contactList.isEmpty()){
@@ -79,52 +82,58 @@ class PreContacts implements Comparator {
     }
 
     void searchContact(){
-        boolean flag=true;
-        log.info("Enter Phone No for Search : ");
-        int phoneNo=input.nextInt();
-        for(ContactDetails contacts:contactList){
-            if(contacts.getPhoneNo()==phoneNo){
-                log.info("\nSearched Contact");
-                log.info("\nName : "+contacts.getName()+"\nPhone No : "+contacts.getPhoneNo()+"\nEmail : "+contacts.getEmail()+"\nNotes : "+contacts.getNotes());
-                flag=false;
-            }
-        }
-        if(flag){
-            log.info("No such Records");
-        }
+        AtomicBoolean flag= new AtomicBoolean(true);
+        log.info("Enter for Search : ");
+        String searchElement = (String)input.next();
 
+        contactList.stream()
+                .filter(contacts -> contacts.getName().toLowerCase().contains(searchElement.toLowerCase()))
+                .forEach(contacts -> {
+                    log.info("\nName : " + contacts.getName() + "\nPhone No : " + contacts.getPhoneNo() + "\nEmail : " + contacts.getEmail() + "\nNotes : " + contacts.getNotes());
+            flag.set(false);
+        });
+        contactList.stream()
+                .filter(contacts->String.valueOf(contacts.getPhoneNo()).contains(searchElement))
+                .forEach(contacts->{
+                    log.info("\nName : "+contacts.getName()+"\nPhone No : "+contacts.getPhoneNo()+"\nEmail : "+contacts.getEmail()+"\nNotes : "+contacts.getNotes());
+            flag.set(false);
+        });
+        noSuchContacts(flag);
     }
 
     void callContact(){
-        boolean flag=true;
-        log.info("Enter Phone No for Call : ");
-        int phoneNo=input.nextInt();
-        for(ContactDetails contacts:contactList){
-            if(contacts.getPhoneNo()==phoneNo){
-                log.info("\n======================\n        Calling       \nName : "+contacts.getName()+"\nPhone No : "+contacts.getPhoneNo()+"\n======================");
-                flag=false;
-                break;
-            }
-        }
-        if(flag){
-            log.info("No such Records");
-        }
+        AtomicBoolean flag= new AtomicBoolean(true);
+        log.info("Enter for Search : ");
+        String searchElement = (String)input.next();
+
+        contactList.stream()
+                .filter(contacts -> String.valueOf(contacts.getPhoneNo()).equals(searchElement))
+                .forEach(contacts -> {
+                    log.info("\n======================\n        Calling       \nName : "+contacts.getName()+"\nPhone No : "+contacts.getPhoneNo()+"\n======================");
+            flag.set(false);
+        });
+        noSuchContacts(flag);
     }
 
     void deleteContact(){
-        boolean flag=true;
-        log.info("Enter Phone No for Delete : ");
-        int phoneNo=input.nextInt();
-        for(ContactDetails contacts:contactList){
-            if(contacts.getPhoneNo()==phoneNo){
+        AtomicBoolean flag= new AtomicBoolean(true);
+        log.info("Enter for Search : ");
+        String searchElement = (String)input.next();
+
+        for (ContactDetails contacts : contactList) {
+            if (contacts.getName().equals(searchElement)||(String.valueOf(contacts.getPhoneNo())).equals(searchElement)){
+                log.info("contact deleted "+contacts.getName());
                 contactList.remove(contacts);
-                log.info("Contact Deleted");
-                flag=false;
+                flag.set(false);
                 break;
             }
         }
-        if(flag){
-            log.info("No such Records");
+        noSuchContacts(flag);
+    }
+
+    void noSuchContacts(AtomicBoolean flag){
+        if(flag.get()){
+            log.info("No such Contacts");
         }
     }
 
@@ -145,6 +154,7 @@ class PreContacts implements Comparator {
                 return -1;
             else
                 return 0;
-
     }
+
+
 }

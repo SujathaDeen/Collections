@@ -2,7 +2,7 @@ package collections;
 
 public class ContactDetails {
     private String name;
-    private int phoneNo;
+    private Long phoneNo;
     private String email;
     private String notes;
 
@@ -14,11 +14,11 @@ public class ContactDetails {
         this.name = name;
     }
 
-    public int getPhoneNo() {
+    public Long getPhoneNo() {
         return phoneNo;
     }
 
-    public void setPhoneNo(int phoneNo) {
+    public void setPhoneNo(Long phoneNo) {
         this.phoneNo = phoneNo;
     }
 
